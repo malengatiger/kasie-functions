@@ -1,27 +1,22 @@
 
-import {getAssociations, getCountries}
-  from "../../shared/src/api/association.api";
 import {onRequest} from "firebase-functions/v1/https";
 import {logger} from "firebase-functions/v1";
+import {insertDispatchRecord, searchDispatchRecordsByVehicleId} from "./workhere/dispatch.functions";
+import {findAssociations, findAssociationVehicles, findCountries}
+  from "./workhere/assoc.functions";
 
-const mm = "INDEX";
-
-export const findCountries = onRequest(async (request, response) => {
-  logger.info("🍎 🍎 🍎 findCountries ....");
-  const res = await getCountries();
-  logger.log(`${mm} 🍎 🍎 🍎 🍎 🍎 🍎 result: ${res.length} countries`);
-  response.send(res);
-});
-
-export const findAssociations = onRequest(async (request, response) => {
-  logger.info("🍎 🍎 🍎 findAssociations ....");
-  const res = await getAssociations();
-  logger.log(`${mm} 🍎 🍎 🍎 🍎 🍎 🍎 result: ${res.length} associations`);
-  response.send(res);
-});
+//dispatch functions
+export const addDispatchRecord = insertDispatchRecord;
+export const getDispatchRecordsByVehicleId = searchDispatchRecordsByVehicleId;
+//association functions
+export const getCountries = findCountries;
+export const getAssociations = findAssociations;
+export const getAssociationCars = findAssociationVehicles;
 
 export const hiYebo = onRequest((request, response) => {
   logger.info("🔼 🔼 🔼 hiYebo : Hello peasants! 🍎");
-  response.send("🔼 🔼 🔼 Hello from Firebase! Cloud Functions! 🍎");
+  response.send("🔼 🔼 🔼 Hello from Firebase. " +
+    "Cloud Functions are presenting ....! 🍎");
 });
+
 
