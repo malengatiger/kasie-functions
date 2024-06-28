@@ -1,16 +1,19 @@
 import { Db, InsertOneResult } from "mongodb";
 import { client } from "../database/config";
-const mm = "dispatch.api";
+const mm = "ambassador.api";
 const dbName = "kasie_transie";
+const collection = "AmbassadorPassengerCount";
 
-export async function createDispatchRecord(rec:any ): Promise<any> {
+export async function createPassengerCount(rec: any): Promise<any> {
   let result: InsertOneResult;
   try {
     await client.connect();
-    const db: Db = client.db(dbName);    
-    result = await db.collection("DispatchRecord").insertOne(rec);
+    const db: Db = client.db(dbName);
+    result = await db.collection(collection).insertOne(rec);
     console.log(
-      `${mm} 🍎🍎🍎 createDispatchRecord done: 🥬 ${result.insertedId} associations 🥬 🥬 `
+      `${mm} 🍎🍎🍎 createPassengerCount done: 🥬 ${JSON.stringify(
+        result
+      )} 🥬 🥬 `
     );
     return result;
   } catch (e) {
@@ -20,19 +23,21 @@ export async function createDispatchRecord(rec:any ): Promise<any> {
   }
 }
 //
-export async function findDispatchRecordsByVehicle(
-  vehicleId: string, fromDate: string, toDate: string
+export async function findPassengerCountsByVehicle(
+  vehicleId: string,
+  fromDate: string,
+  toDate: string
 ): Promise<any[]> {
   let result: any[] = [];
   try {
     await client.connect();
     const db: Db = client.db(dbName);
     result = await db
-      .collection("DispatchRecord")
+      .collection(collection)
       .find({ vehicleId: vehicleId, created: { $gte: fromDate, $lt: toDate } })
       .toArray();
     console.log(
-      `${mm} 🍎🍎🍎 getDispatchRecordsByVehicleId found: 
+      `${mm} 🍎🍎🍎 findPassengerCountsByVehicleId found: 
       🥬 ${result.length} records 🥬 🥬 `
     );
     return result;
@@ -44,7 +49,7 @@ export async function findDispatchRecordsByVehicle(
   return result;
 }
 
-export async function findDispatchRecordsByAssociation(
+export async function findPassengerCountsByAssociation(
   associationId: string,
   fromDate: string,
   toDate: string
@@ -54,14 +59,14 @@ export async function findDispatchRecordsByAssociation(
     await client.connect();
     const db: Db = client.db(dbName);
     result = await db
-      .collection("DispatchRecord")
+      .collection(collection)
       .find({
         associationId: associationId,
         created: { $gte: fromDate, $lt: toDate },
       })
       .toArray();
     console.log(
-      `${mm} 🍎🍎🍎 findDispatchRecordsByAssociationId found: 
+      `${mm} 🍎🍎🍎 findPassengerCountsByAssociation found: 
       🥬 ${result.length} records 🥬 🥬 `
     );
     return result;
@@ -72,7 +77,7 @@ export async function findDispatchRecordsByAssociation(
   }
   return result;
 }
-export async function findDispatchRecordsByMarshal(
+export async function findPassengerCountsByAmbassador(
   userId: string,
   fromDate: string,
   toDate: string
@@ -81,12 +86,13 @@ export async function findDispatchRecordsByMarshal(
   try {
     await client.connect();
     const db: Db = client.db(dbName);
+
     result = await db
-      .collection("DispatchRecord")
-      .find({ marshalId: userId, created: { $gte: fromDate, $lt: toDate } })
+      .collection(collection)
+      .find({ userId: userId, created: { $gte: fromDate, $lt: toDate } })
       .toArray();
     console.log(
-      `${mm} 🍎🍎🍎 findDispatchRecordsByMarshal found: 
+      `${mm} 🍎🍎🍎 findPassengerCountsByAmbassador found: 
       🥬 ${result.length} records 🥬 🥬 `
     );
     return result;
