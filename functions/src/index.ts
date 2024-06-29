@@ -27,6 +27,8 @@ import {
 } from "./workhere/route.functions";
 import { insertPassengerCount, listPassengerCountsByAmbassador, listPassengerCountsByAssociation, listPassengerCountsByVehicle } from "./workhere/ambassador.functions";
 import { insertHeartbeat, insertVehicleArrival, insertVehicleDeparture, insertVehiclePhoto, insertVehicleVideo, listVehicleArrivals, listVehicleDepartures, listVehicleHeartbeats, listVehiclePhotos, listVehicleVideos } from "./workhere/vehicle.functions";
+import { uploadFileZ } from "./workhere/cs.functions";
+
 
 //dispatch functions
 export const addDispatchRecord = insertDispatchRecord;
@@ -72,6 +74,10 @@ export const getVehicleHeartbeats = listVehicleHeartbeats;
 export const getVehicleArrivals = listVehicleArrivals;
 export const getVehicleDepartures = listVehicleDepartures;
 
+//cloud storage functions
+// export const uploadFile = uploadFileX;
+export const uploadFilesToCloudStorage = uploadFileZ;
+// export const downloadFile = downloadFileX;
 //generics
 export const getCountries = findCountries;
 export const hiYebo = onRequest((request, response) => {
