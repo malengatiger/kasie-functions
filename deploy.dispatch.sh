@@ -1,0 +1,1 @@
+firebase deploy --only functions:addDispatchRecord,functions:getDispatchRecordsByVehicle,functions:getDispatchRecordsByAssociation,functions:getDispatchRecordsByMarshal

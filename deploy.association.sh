@@ -1,0 +1,1 @@
+firebase deploy --only functions:registerAssociation,functions:registerAssociationUser,functions:addSettings,functions:getAssociations,functions:getAssociationCars

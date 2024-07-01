@@ -1,17 +1,14 @@
+import { ObjectId } from 'mongodb';
 import { Position } from './position';
 
 
 export interface RoutePoint {
   _partitionKey: string;
-  _id: string;
+  _id: ObjectId;
  
   routePointId: string;
  
-  latitude: number;
- 
-  longitude: number;
- 
-  heading: number;
+  heading?: number;
  
   index: number;
  
@@ -21,7 +18,7 @@ export interface RoutePoint {
  
   associationId: string;
  
-  routeName: string;
+  routeName?: string;
  
   position: Position;
 }

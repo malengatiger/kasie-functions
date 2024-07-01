@@ -1,0 +1,1 @@
+firebase deploy --only functions:addVehicle,functions:getQRCode,functions:addVehicleHeartbeat,functions:addVehiclePhoto,functions:addVehicleVideo,functions:addVehicleArrival,functions:addVehicleDeparture,functions:updateVehicleQRCode

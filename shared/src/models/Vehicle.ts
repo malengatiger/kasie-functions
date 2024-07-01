@@ -1,13 +1,13 @@
+import { ObjectId } from "mongodb";
+
 /* eslint-disable @typescript-eslint/no-unused-vars */
 export interface Vehicle {
   _partitionKey: string;
 
-  _id: string;
+  _id: ObjectId;
  
-  ownerId: string;
- 
-  cellphone: string;
- 
+  ownerId?: string;
+  
   vehicleId: string;
  
   associationId: string;

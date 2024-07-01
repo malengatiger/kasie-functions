@@ -49,7 +49,7 @@ export const addAssociationUser = onRequest(async (request, response) => {
   const user = request.body; // Type assertion
 
   const res = await createAssociationUser(user);
-  logger.log(`${mm} 🍎 found: ${res.length} cars`); // Corrected log message
+  logger.log(`${mm} 🍎 created: ${JSON.stringify(res)}}`); // Corrected log message
   response.send(res);
 });
 export const insertSettings = onRequest(async (request, response) => {

@@ -6,7 +6,11 @@ import * as os from "os";
 import * as fs from "fs";
 import * as path from "path";
 import * as QRCode from "qrcode";
-import { updateCar } from "../api/vehicle.api";
+import { updateVehicleQRCodeX as insertVehicleQRCode } from "../api/vehicle.api";
+import { updateCommuterQRCode } from "../api/commuter.api";
+import { updateRouteQRCode } from "../api/route.api";
+import { Route } from "../models/Route";
+import { Vehicle } from "../models/Vehicle";
 
 const bucketName = "kasie2024.appspot.com";
 // const directory = "kasieFiles";
@@ -129,84 +133,96 @@ async function upload2bucket(urls: any[], file: any, name: any) {
 
 const qrDir = "kasieVehicleQRCodes/";
 //
-export async function makeVehicleQRCode(
-  vehicleId: string,
-  vehicleReg: string,
-  associationId: string,
-  associationName: string
-): Promise<string> {
-  if (!vehicleId || !vehicleReg || !associationId || !associationName) {
-    throw new Error("Invalid input");
-  }
-  logger.log(`🍎 🍎 🍎 🍎 🍎 🍎 ${xx} generateQRCode starting ...`);
+export async function makeVehicleQRCode(vehicle: Vehicle): Promise<Vehicle> {
+  logger.log(`🍎 🍎 🍎 🍎 🍎 🍎 ${xx} makeVehicleQRCode starting ...`);
   const storage = getStorage();
 
   const options: QRCode.QRCodeToBufferOptions = {
-    width: 400,
+    width: 480,
     type: "png",
   };
   const map = {
-    vehicleId: vehicleId,
-    vehicleReg: vehicleReg,
-    associationId: associationId,
-    associationName: associationName,
+    vehicleId: vehicle.vehicleId,
+    vehicleReg: vehicle.vehicleReg,
+    associationId: vehicle.associationId,
+    associationName: vehicle.associationName,
   };
   const buffer = await QRCode.toBuffer(`${JSON.stringify(map)}`, options);
 
   console.log(`${xx} qrCodeImage: ${buffer.byteLength} png bytes`); // Log the buffer
 
-  const fileName = `${qrDir}qr_code_${vehicleId}.png`; // Create a unique file name
+  const fileName = `${qrDir}qr_code_${vehicle.vehicleId}.png`; // Create a unique file name
   const fileRef = storage.bucket(bucketName).file(fileName);
-  logger.log(`${xx} Upload the buffer to Cloud Storage ... ${fileName}`);
   await fileRef.save(buffer);
-  logger.log(`${xx} qrcode image file saved: 🥦🥦🥦 🔵 ${fileRef.name}`);
-  const downloadURL = await getDownloadURL(fileRef);
+  logger.log(`${xx} qrcode image file saved: 🥦🥦🥦 🔵 ${fileName}`);
 
-  //todo - update vehicle ...
-  await updateCar(vehicleId, downloadURL);
+  const downloadURL = await getDownloadURL(fileRef);
+  await insertVehicleQRCode(
+    vehicle.vehicleId,
+    downloadURL
+  );
   console.log(`${xx} returning QR code generated: URL: 🔵🔵🔵 ${downloadURL}`);
-  return downloadURL;
+  const resp = <Vehicle>{};
+  resp.vehicleId = vehicle.vehicleId;
+  resp.vehicleReg = vehicle.vehicleReg;
+  resp.associationId = vehicle.associationId;
+  resp.associationName = vehicle.associationName;
+  resp.qrCodeUrl = downloadURL;
+  resp.countryId = vehicle.countryId;
+  resp.make = vehicle.make;
+  resp.model = vehicle.model;
+  resp.year = vehicle.year;
+  resp.ownerId = vehicle.ownerId;
+  resp.ownerName = vehicle.ownerName;
+  resp.active = vehicle.active;
+  resp.passengerCapacity = vehicle.passengerCapacity;
+
+  return resp;
 }
+
+//Route QR code
 const routeDir = "kasieRouteQRCodes/";
 
-export async function makeRouteQRCode(
-  routeId: string,
-  routeName: string,
-): Promise<string> {
-  if (!routeId || !routeName ) {
-    throw new Error("Invalid input");
-  }
+export async function makeRouteQRCode(route: Route): Promise<Route> {
   logger.log(`🍎 🍎 🍎 🍎 🍎 🍎 ${xx} makeRouteQRCode starting ...`);
   const storage = getStorage();
-
   const options: QRCode.QRCodeToBufferOptions = {
-    width: 400,
+    width: 640,
     type: "png",
   };
   const map = {
-    landmarkId: routeId,
-    landmarkName: routeName,
+    routeId: route.routeId,
+    routeName: route.name,
+    routeStartEnd: route.routeStartEnd,
+    associationId: route.associationId,
+    associationName: route.associationName,
   };
-  const buffer = await QRCode.toBuffer(
-    `${JSON.stringify(map)}`,
-    options 
-  );
+
+  const buffer = await QRCode.toBuffer(`${JSON.stringify(map)}`, options);
 
   console.log(`${xx} qrCodeImage: ${buffer.byteLength} png bytes`); // Log the buffer
 
-  const fileName = `${routeDir}qr_code_${routeId}.png`; // Create a unique file name
+  const fileName = `${routeDir}qr_code_${route.routeId}.png`; // Create a unique file name
   const fileRef = storage.bucket(bucketName).file(fileName);
   logger.log(`${xx} Upload the buffer to Cloud Storage ... ${fileName}`);
   await fileRef.save(buffer);
   logger.log(`${xx} qrcode image file saved: 🥦🥦🥦 🔵 ${fileRef.name}`);
   const downloadURL = await getDownloadURL(fileRef);
 
-  //todo - update vehicle ...
-  await updateCar(routeId, downloadURL);
+  await updateRouteQRCode(route.routeId, downloadURL);
   console.log(`${xx} returning QR code generated: URL: 🔵🔵🔵 ${downloadURL}`);
-  return downloadURL;
+  const resp = <Route>{};
+  resp.routeId = route.routeId;
+  resp.name = route.name;
+  resp.routeStartEnd = route.routeStartEnd;
+  resp.associationId = route.associationId;
+  resp.associationName = route.associationName;
+  resp.qrCodeUrl = downloadURL;
+
+  return resp;
 }
-const userDir = 'kasieUserQRCodes/'
+//User QR code
+const userDir = "kasieUserQRCodes/";
 export async function makeUserQRCode(
   userId: string,
   email: string
@@ -237,6 +253,41 @@ export async function makeUserQRCode(
   const downloadURL = await getDownloadURL(fileRef);
 
   // await updateCommuter(userId, downloadURL);
+  console.log(`${xx} returning QR code generated: URL: 🔵🔵🔵 ${downloadURL}`);
+  return downloadURL;
+}
+//
+const commuterDir = "commuterQRCodes/";
+export async function makeCommuterQRCode(
+  commuterId: string,
+  email: string
+): Promise<string> {
+  if (!commuterId || !email) {
+    throw new Error("Invalid input");
+  }
+  logger.log(`🍎 🍎 🍎 🍎 🍎 🍎 ${xx} makeCommuterQRCode starting ...`);
+  const storage = getStorage();
+
+  const options: QRCode.QRCodeToBufferOptions = {
+    width: 400,
+    type: "png",
+  };
+  const map = {
+    userId: commuterId,
+    email: email,
+  };
+  const buffer = await QRCode.toBuffer(`${JSON.stringify(map)}`, options);
+
+  console.log(`${xx} qrCodeImage: ${buffer.byteLength} png bytes`); // Log the buffer
+
+  const fileName = `${commuterDir}qr_code_${commuterId}.png`; // Create a unique file name
+  const fileRef = storage.bucket(bucketName).file(fileName);
+  logger.log(`${xx} Upload the buffer to Cloud Storage ... ${fileName}`);
+  await fileRef.save(buffer);
+  logger.log(`${xx} qrcode image file saved: 🥦🥦🥦 🔵 ${fileRef.name}`);
+  const downloadURL = await getDownloadURL(fileRef);
+
+  await updateCommuterQRCode(commuterId, downloadURL);
   console.log(`${xx} returning QR code generated: URL: 🔵🔵🔵 ${downloadURL}`);
   return downloadURL;
 }

@@ -1,23 +1,22 @@
 import { Position } from './position';
 
 export interface DispatchRecord {
-  dispatchRecordId: String,
-  slug: String,
-  routeLandmarkId: String,
-  marshalId: String,
+  dispatchRecordId: string,
+  routeLandmarkId: string,
+  marshalId: string,
   passengers: Number,
-  ownerId: String,
-  created: String,
+  ownerId: string,
+  created: string,
   position: Position,
-  dispatched: Boolean,
-  landmarkName: String,
-  marshalName: String,
-  routeId: String,
-  vehicleId: String,
-  vehicleArrivalId: String,
-  vehicleReg: String,
-  associationId: String,
-  associationName: String,
+  dispatched: boolean,
+  landmarkName: string,
+  marshalName: string,
+  routeId: string,
+  vehicleId: string,
+  vehicleArrivalId: string,
+  vehicleReg: string,
+  associationId: string,
+  associationName: string,
   
 };
 

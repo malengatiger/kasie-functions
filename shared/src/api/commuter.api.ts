@@ -1,6 +1,11 @@
 import { Db, InsertOneResult } from "mongodb";
 import { client } from "../database/config";
-import { makeUserQRCode } from "../utilities/upload_to_bucket";
+import {
+  makeCommuterQRCode,
+} from "../utilities/upload_to_bucket";
+import { Commuter } from "../models/Commuter";
+import { handleError } from "./error.api";
+import { CommuterResponse } from "../models/CommuterResponse";
 
 const mm = "🍎🍎🍎 vehicle.api";
 const dbName = "kasie_transie";
@@ -9,7 +14,10 @@ const commuterResponseCollection = "CommuterResponse";
 
 const commuterCollection = "Commuter";
 
-export async function updateCommuter(commuterId: string, qrCodeUrl: string): Promise<any> {
+export async function updateCommuterQRCode(
+  commuterId: string,
+  qrCodeUrl: string
+): Promise<any> {
   try {
     console.log(
       `${mm} updateCommuter: ${commuterId} 🎲 qrCodeUrl: ${qrCodeUrl}`
@@ -33,12 +41,16 @@ export async function updateCommuter(commuterId: string, qrCodeUrl: string): Pro
     return result;
   } catch (e) {
     console.error(e);
+    handleError(`updateCommuterQRCode: ${e}`, {});
+    throw new Error(`updateCommuterQRCode: ${e}`);
   } finally {
     await client.close();
   }
 }
-export async function createCommuter(commuter: any): Promise<any> {
+export async function createCommuter(commuter: Commuter): Promise<Commuter> {
   let result: InsertOneResult;
+  const resp = <Commuter>{};
+
   try {
     await client.connect();
     const db: Db = client.db(dbName);
@@ -48,17 +60,31 @@ export async function createCommuter(commuter: any): Promise<any> {
         result
       )} 🥬}  ... get commuter qrCode ... 🥬🥬 `
     );
-    const qrCodeUrl = await makeUserQRCode(
+    const qrCodeUrl = await makeCommuterQRCode(
       commuter.commuterId,
-      commuter.email,
+      commuter.email
     );
-    await updateCommuter(commuter.commuterId, qrCodeUrl);
-    return result;
+
+    await updateCommuterQRCode(commuter.commuterId, qrCodeUrl);
+
+    resp.commuterId = commuter.commuterId;
+    resp.email = commuter.email;
+    resp.qrCodeUrl = qrCodeUrl;
+    resp.name = commuter.name;
+    resp.countryId = commuter.countryId;
+    resp.cellphone = commuter.cellphone;
+    resp.profileThumbnail = commuter.profileThumbnail;
+    resp.profileUrl = commuter.profileUrl;
+
+    return resp;
   } catch (e) {
     console.error(e);
+    handleError(`createCommuter: ${e}`, {});
+    throw new Error(`createCommuter: ${e}`);
   } finally {
     await client.close();
   }
+  return resp;
 }
 export async function createCommuterRequest(rec: any): Promise<any> {
   let result: InsertOneResult;
@@ -72,24 +98,28 @@ export async function createCommuterRequest(rec: any): Promise<any> {
     return result;
   } catch (e) {
     console.error(e);
+    handleError(`createCommuterRequest: ${e}`, {});
+    throw new Error(`createCommuterRequest: ${e}`);
   } finally {
     await client.close();
   }
 }
-export async function createCommuterResponse(rec: any): Promise<any> {
+export async function createCommuterResponse(rec: CommuterResponse): Promise<any> {
   let result: InsertOneResult;
   try {
     await client.connect();
     const db: Db = client.db(dbName);
     result = await db.collection(commuterResponseCollection).insertOne(rec);
     console.log(
-      `${mm} 🍎🍎🍎 createVehicleArrival done: 🥬 ${JSON.stringify(
+      `${mm} 🍎🍎🍎 createCommuterResponse done: 🥬 ${JSON.stringify(
         result
       )} 🥬 🥬 `
     );
     return result;
   } catch (e) {
     console.error(e);
+    handleError(`createCommuterResponse: ${e}`, {});
+    throw new Error(`createCommuterResponse: ${e}`);
   } finally {
     await client.close();
   }

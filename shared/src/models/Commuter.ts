@@ -1,29 +1,30 @@
+import { ObjectId } from "mongodb";
 
 export interface Commuter {
   _partitionKey: string;
 
-  _id: string;
+  _id: ObjectId;
  
   commuterId: string;
  
-  cellphone: string;
+  cellphone?: string;
  
   email: string;
  
-  name: string;
+  name?: string;
  
   dateRegistered: string;
  
-  qrCodeUrl: string;
+  qrCodeUrl?: string;
  
-  profileUrl: string;
+  profileUrl?: string;
  
-  profileThumbnail: string;
+  profileThumbnail?: string;
  
-  countryId: string;
+  countryId?: string;
  
-  password: string;
+  password?: string;
  
-  gender: string;
+  gender?: string;
 }
 

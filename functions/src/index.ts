@@ -1,4 +1,4 @@
-import { onRequest } from "firebase-functions/v1/https";
+// import { onRequest } from "firebase-functions/v1/https";
 import { logger } from "firebase-functions/v1";
 import {
   insertDispatchRecord,
@@ -26,11 +26,12 @@ import {
   listRoutesByLocation,
 } from "./workhere/route.functions";
 import { insertPassengerCount, listPassengerCountsByAmbassador, listPassengerCountsByAssociation, listPassengerCountsByVehicle } from "./workhere/ambassador.functions";
-import { generateQRCode, insertHeartbeat, insertVehicleArrival, insertVehicleDeparture, insertVehiclePhoto, insertVehicleVideo, listVehicleArrivals, listVehicleDepartures, listVehicleHeartbeats, listVehiclePhotos, listVehicleVideos } from "./workhere/vehicle.functions";
+import { generateQRCode, insertHeartbeat, insertVehicleArrival, insertVehicleDeparture, insertVehiclePhoto, insertVehicleVideo, listVehicleArrivals, listVehicleDepartures, listVehicleHeartbeats, listVehiclePhotos, listVehicleVideos, updateCarQRCodeX } from "./workhere/vehicle.functions";
 import { downloadFileByName, downloadUsingUrl, uploadFileZ } from "./workhere/cloud_storage.functions";
 
 import * as admin from "firebase-admin";
-import { insertCommuter, insertCommuterRequest, insertCommuterResponse } from "./workhere/commuter.functions copy";
+import { insertCommuter, insertCommuterRequest, insertCommuterResponse } from "./workhere/commuter.functions";
+import { onRequest } from "firebase-functions/v2/https";
 const app = admin.initializeApp();
 console.log(`🎲 🎲 🎲 initializeApp completed:  🅿️  ${app.name} 🅿️ `);
 console.log(
@@ -38,7 +39,6 @@ console.log(
     app.options
   )} 🅿️ `
 );
-
 
 //dispatch functions
 export const addDispatchRecord = insertDispatchRecord;
@@ -78,6 +78,7 @@ export const addVehiclePhoto = insertVehiclePhoto;
 export const addVehicleVideo = insertVehicleVideo;
 export const addVehicleArrival = insertVehicleArrival;
 export const addVehicleDeparture = insertVehicleDeparture;
+export const updateVehicleQRCode = updateCarQRCodeX;
 
 export const getVehiclePhotos = listVehiclePhotos;
 export const getVehicleVideos = listVehicleVideos;
@@ -86,7 +87,6 @@ export const getVehicleArrivals = listVehicleArrivals;
 export const getVehicleDepartures = listVehicleDepartures;
 
 //cloud storage functions
-// export const uploadFile = uploadFileX;
 export const uploadFilesToCloudStorage = uploadFileZ;
 export const downloadCloudStorageFile = downloadFileByName;
 export const downloadFileFromWeb = downloadUsingUrl;
@@ -96,13 +96,15 @@ export const addCommuter = insertCommuter;
 export const addCommuterRequest = insertCommuterRequest;
 export const addCommuterResponse = insertCommuterResponse;
 
+//FCM messaging functions
 
 //generics
 export const getCountries = findCountries;
-export const hiYebo = onRequest((request, response) => {
+export const hiYebo = onRequest((_request, response) => {
   logger.info("🔼 🔼 🔼 hiYebo : Hello peasants! 🍎");
   response.send(
-    "🔼 🔼 🔼 Hello from Firebase. " + "Cloud Functions are presenting ....! 🍎"
+    "🔼 🔼 🔼 🍎 Hello from Firebase. " +
+      "Cloud Functions are presenting ....! 🍎 🍎 🍎 🍎"
   );
 });
 

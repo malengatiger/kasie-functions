@@ -1,0 +1,1 @@
+firebase deploy --only functions:uploadFilesToCloudStorage,functions:downloadCloudStorageFile,functions:downloadFileFromWeb

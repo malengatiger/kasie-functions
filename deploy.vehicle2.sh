@@ -1,0 +1,1 @@
+firebase deploy --only functions:getVehiclePhotos,functions:getVehicleVideos,functions:getVehicleHeartbeats,functions:getVehicleArrivals,functions:getVehicleDepartures

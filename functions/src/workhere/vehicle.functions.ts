@@ -9,6 +9,7 @@ import {
   createVehiclePhoto,
   createVehicleVideo,
   findVehicleArrivals,
+  findVehicleById,
   findVehicleDepartures,
   findVehicleHeartbeats,
   findVehiclePhotos,
@@ -34,15 +35,34 @@ export const generateQRCode = onRequest(async (request, response) => {
     return;
   }
 
-  const downloadURL = await makeVehicleQRCode(
-    vehicleId,
-    vehicleReg,
-    associationId,
-    associationName
-  );
+  const car = await findVehicleById(vehicleId);
+  const downloadURL = await makeVehicleQRCode(car);
 
   console.log(`\n${mm} sending QR code generated: URL: 🔵🔵🔵 ${downloadURL}`);
   response.send(downloadURL);
+});
+//
+export const updateCarQRCodeX = onRequest(async (request, response) => {
+  const vehicleId = request.query["vehicleId"] as string;
+  const vehicleReg = request.query["vehicleReg"] as string;
+  const associationId = request.query["associationId"] as string;
+  const associationName = request.query["associationName"] as string;
+
+  if (!vehicleId || !vehicleReg || !associationId || !associationName) {
+    response.status(400).send({
+      function: "generateQRCode",
+      message: "Invalid request parameters",
+      date: new Date(),
+    });
+    return;
+  }
+
+  const car = await findVehicleById(vehicleId);
+  const mCar = await makeVehicleQRCode(car);
+  console.log(
+    `\n${mm} updateCarCode generated: URL: 🔵🔵🔵 ${JSON.stringify(mCar.qrCodeUrl)}`
+  );
+  response.send(mCar);
 });
 
 export const insertVehicle = onRequest(async (request, response) => {

@@ -1,9 +1,10 @@
+import { ObjectId } from 'mongodb';
 import { RouteStartEnd } from './RouteStartEnd';
 
 export interface Route {
   _partitionKey: string;
 
-  _id: string;
+  _id: ObjectId;
 
   routeId: string;
 

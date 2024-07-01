@@ -1,0 +1,1 @@
+firebase deploy --only functions:addRoute,functions:addRoutePoints,functions:addRouteLandmarks,functions:getRoutePoints,functions:getRouteLandmarks,functions:getAssociationRoutes,functions:getRoutes,functions:getRoutesByLocation

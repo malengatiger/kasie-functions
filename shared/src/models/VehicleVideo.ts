@@ -1,9 +1,10 @@
+import { ObjectId } from 'mongodb';
 import { Position } from './position';
 
 export interface VehicleVideo {
   _partitionKey: string,
 
-  _id: string,
+  _id: ObjectId,
  
   vehicleId: string,
  

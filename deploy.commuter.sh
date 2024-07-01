@@ -1,0 +1,1 @@
+firebase deploy --only functions:addCommuter,functions:addCommuterRequest,functions:addCommuterResponse

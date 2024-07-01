@@ -1,0 +1,1 @@
+firebase deploy --only functions:addPassengerCount,functions:getPassengerCountByVehicle,functions:getPassengerCountsByAssociation,functions:getPassengerCountsByAmbassador
