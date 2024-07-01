@@ -1,7 +1,9 @@
 import {logger} from "firebase-functions/v1";
 import {onRequest} from "firebase-functions/v2/https";
-import {createAssociation, createAssociationUser, createCar, createSettings, getAssociationCars, getAssociations, getCountries}
+import {createAssociation, createAssociationUser, 
+   createSettings, getAssociationCars, getAssociations, getCountries}
   from "../../../shared/src/api/association.api";
+  import {createCar} from "../../../shared/src/api/vehicle.api";
 const mm = "assoc.functions";
 
 export const findCountries = onRequest(async (request, response) => {

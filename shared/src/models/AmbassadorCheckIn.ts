@@ -1,13 +1,6 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Position } from './position';
-import { HydratedDocument } from 'mongoose';
 
-export type AmbassadorCheckInDocument = HydratedDocument<AmbassadorCheckIn>;
-@Schema({
-  timestamps: true,
-  collection: 'AmbassadorCheckIn',
-})
-export class AmbassadorCheckIn {
+export interface AmbassadorCheckIn {
   _partitionKey: string;
 
   _id: string;
@@ -27,5 +20,3 @@ export class AmbassadorCheckIn {
   position: Position;
 }
 
-export const AmbassadorCheckInSchema =
-  SchemaFactory.createForClass(AmbassadorCheckIn);

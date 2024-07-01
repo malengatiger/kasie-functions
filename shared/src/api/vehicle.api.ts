@@ -1,6 +1,8 @@
 import { Db, InsertOneResult } from "mongodb";
 import { client } from "../database/config";
-const mm = "vehicle.api";
+import { makeVehicleQRCode } from "../utilities/upload_to_bucket";
+
+const mm = "🍎🍎🍎 vehicle.api";
 const dbName = "kasie_transie";
 const heartbeatCollection = "VehicleHeartbeat";
 const photoCollection = "VehiclePhoto";
@@ -8,14 +10,55 @@ const videoCollection = "VehicleVideo";
 const arrivalCollection = "VehicleArrival";
 const departureCollection = "VehicleDeparture";
 
+export async function updateCar(vehicleId: string, qrCodeUrl: string): Promise<any> {
+  try {
+    console.log(`${mm} updateCar: ${vehicleId} 🎲 qrCodeUrl: ${qrCodeUrl}`);
+    await client.connect();
+    const db: Db = client.db(dbName);
+    const filter = { vehicleId: vehicleId };
+    const options = { upsert: false };
+    const updateDoc = {
+      $set: {
+        qrCodeUrl: qrCodeUrl,
+      },
+    };
+    // Update the first document that matches the filter
+    const cars = db.collection("Vehicle");
+    const result = await cars.updateOne(filter, updateDoc, options);
 
-
-
-export async function createHeartbeat(rec:any ): Promise<any> {
+    console.log(
+      `${mm} ${result.matchedCount} car(s) matched the filter, updated ${result.modifiedCount} document(s)`
+    );
+    return result;
+  } catch (e) {
+    console.error(e);
+  } finally {
+    await client.close();
+  }
+}
+export async function createCar(car: any): Promise<any> {
   let result: InsertOneResult;
   try {
     await client.connect();
-    const db: Db = client.db(dbName);    
+    const db: Db = client.db(dbName);
+    result = await db.collection("Vehicle").insertOne(car);
+    console.log(
+      `${mm} 🍎🍎🍎 createCar done: 🥬 ${JSON.stringify(result)} 🥬}  ... get car qrCode ... 🥬🥬 `
+    );
+    const qrCodeUrl = await makeVehicleQRCode(car.vehicleId, car.vehicleReg, car.associationId, car.associationName);
+    await updateCar(car.vehicleId, qrCodeUrl);
+    return result;
+  } catch (e) {
+    console.error(e);
+  } finally {
+    await client.close();
+  }
+}
+export async function createHeartbeat(rec: any): Promise<any> {
+  let result: InsertOneResult;
+  try {
+    await client.connect();
+    const db: Db = client.db(dbName);
     result = await db.collection(heartbeatCollection).insertOne(rec);
     console.log(
       `${mm} 🍎🍎🍎 createHeartbeat done: 🥬 ${JSON.stringify(result)} 🥬 🥬 `
@@ -50,9 +93,7 @@ export async function createVehicleDeparture(rec: any): Promise<any> {
   try {
     await client.connect();
     const db: Db = client.db(dbName);
-    result = await db.collection(
-      departureCollection
-    ).insertOne(rec);
+    result = await db.collection(departureCollection).insertOne(rec);
     console.log(
       `${mm} 🍎🍎🍎 createVehicleDeparture done: 🥬 ${JSON.stringify(
         result
@@ -102,9 +143,7 @@ export async function createVehicleVideo(rec: any): Promise<any> {
   }
 }
 //
-export async function findVehiclePhotos(
-  vehicleId: string
-): Promise<any[]> {
+export async function findVehiclePhotos(vehicleId: string): Promise<any[]> {
   let result: any[] = [];
   try {
     await client.connect();
@@ -222,5 +261,3 @@ export async function findVehicleDepartures(
   }
   return result;
 }
-
-

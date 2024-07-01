@@ -56,22 +56,6 @@ export async function createSettings(settings: any): Promise<any> {
     await client.close();
   }
 }
-export async function createCar(car: any): Promise<any> {
-  let result: InsertOneResult;
-  try {
-    await client.connect();
-    const db: Db = client.db(dbName);
-    result = await db.collection("Vehicle").insertOne(car);
-    console.log(
-      `${mm} 🍎🍎🍎 createCar done: 🥬 ${result.insertedId}  🥬🥬 `
-    );
-    return result;
-  } catch (e) {
-    console.error(e);
-  } finally {
-    await client.close();
-  }
-}
 export async function createAssociation(association: any): Promise<any> {
   let result: InsertOneResult;
   try {

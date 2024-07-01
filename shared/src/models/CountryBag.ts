@@ -1,4 +1,4 @@
-export class CountryBag {
+export interface CountryBag {
   countries: [];
 
   states: [];

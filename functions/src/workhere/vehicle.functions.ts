@@ -1,6 +1,8 @@
 import { logger } from "firebase-functions/v1";
 import { onRequest } from "firebase-functions/v2/https";
+
 import {
+  createCar,
   createHeartbeat,
   createVehicleArrival,
   createVehicleDeparture,
@@ -12,8 +14,46 @@ import {
   findVehiclePhotos,
   findVehicleVideos,
 } from "../../../shared/src/api/vehicle.api";
-const mm = "ambassador.functions";
 
+const mm = "💛 💛 💛 vehicle.functions";
+import { makeVehicleQRCode } from "../../../shared/src/utilities/upload_to_bucket";
+
+
+export const generateQRCode = onRequest(async (request, response) => {
+  const vehicleId = request.query["vehicleId"] as string;
+  const vehicleReg = request.query["vehicleReg"] as string;
+  const associationId = request.query["associationId"] as string;
+  const associationName = request.query["associationName"] as string;
+
+  if (!vehicleId || !vehicleReg || !associationId || !associationName) {
+    response.status(400).send({
+      function: "generateQRCode",
+      message: "Invalid request parameters",
+      date: new Date(),
+    });
+    return;
+  }
+
+  const downloadURL = await makeVehicleQRCode(
+    vehicleId,
+    vehicleReg,
+    associationId,
+    associationName
+  );
+
+  console.log(`\n${mm} sending QR code generated: URL: 🔵🔵🔵 ${downloadURL}`);
+  response.send(downloadURL);
+});
+
+export const insertVehicle = onRequest(async (request, response) => {
+  const body = request.body;
+  logger.log(
+    `🍎 🍎 🍎 🍎 🍎 🍎 ` + `insertVehicle body: ${JSON.stringify(body)}`
+  );
+  const res = await createCar(body);
+  logger.log(`🍎 🍎 ${mm} insertVehicle result: ${res}`);
+  response.send(res);
+});
 export const insertHeartbeat = onRequest(async (request, response) => {
   const body = request.body;
   logger.log(
@@ -29,6 +69,8 @@ export const insertVehiclePhoto = onRequest(async (request, response) => {
   logger.log(
     `🍎 🍎 🍎 🍎 🍎 🍎 ` + `insertVehiclePhoto body: ${JSON.stringify(body)}`
   );
+
+  
   const res = await createVehiclePhoto(body);
   logger.log(`🍎 🍎 ${mm} insertVehiclePhoto result: ${res}`);
   response.send(res);
@@ -44,7 +86,7 @@ export const insertVehicleArrival = onRequest(async (request, response) => {
   response.send(res);
 });
 
-export const insertVehicleDeparture= onRequest(async (request, response) => {
+export const insertVehicleDeparture = onRequest(async (request, response) => {
   const body = request.body;
   logger.log(
     `🍎 🍎 🍎 🍎 🍎 🍎 ` +
@@ -54,7 +96,6 @@ export const insertVehicleDeparture= onRequest(async (request, response) => {
   logger.log(`🍎 🍎 ${mm} insertVehicleDeparture result: ${res}`);
   response.send(res);
 });
-
 
 export const insertVehicleVideo = onRequest(async (request, response) => {
   const body = request.body;

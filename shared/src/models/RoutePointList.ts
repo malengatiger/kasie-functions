@@ -1,3 +1,3 @@
-export class RoutePointList {
+export interface RoutePointList {
   routePoints: [];
 }

@@ -26,8 +26,18 @@ import {
   listRoutesByLocation,
 } from "./workhere/route.functions";
 import { insertPassengerCount, listPassengerCountsByAmbassador, listPassengerCountsByAssociation, listPassengerCountsByVehicle } from "./workhere/ambassador.functions";
-import { insertHeartbeat, insertVehicleArrival, insertVehicleDeparture, insertVehiclePhoto, insertVehicleVideo, listVehicleArrivals, listVehicleDepartures, listVehicleHeartbeats, listVehiclePhotos, listVehicleVideos } from "./workhere/vehicle.functions";
-import { uploadFileZ } from "./workhere/cs.functions";
+import { generateQRCode, insertHeartbeat, insertVehicleArrival, insertVehicleDeparture, insertVehiclePhoto, insertVehicleVideo, listVehicleArrivals, listVehicleDepartures, listVehicleHeartbeats, listVehiclePhotos, listVehicleVideos } from "./workhere/vehicle.functions";
+import { downloadFileByName, downloadUsingUrl, uploadFileZ } from "./workhere/cloud_storage.functions";
+
+import * as admin from "firebase-admin";
+import { insertCommuter, insertCommuterRequest, insertCommuterResponse } from "./workhere/commuter.functions copy";
+const app = admin.initializeApp();
+console.log(`🎲 🎲 🎲 initializeApp completed:  🅿️  ${app.name} 🅿️ `);
+console.log(
+  `🎲 🎲 🎲 initializeApp completed, options:  🅿️  ${JSON.stringify(
+    app.options
+  )} 🅿️ `
+);
 
 
 //dispatch functions
@@ -40,7 +50,6 @@ export const getDispatchRecordsByMarshal = listDispatchRecordsByMarshal;
 export const registerAssociationUser = addAssociationUser;
 export const registerAssociation = addAssociation;
 export const addSettings = insertSettings;
-export const addVehicle = createVehicle;
 
 export const getAssociations = findAssociations;
 export const getAssociationCars = findAssociationVehicles;
@@ -62,6 +71,8 @@ export const getPassengerCountsByAssociation = listPassengerCountsByAssociation;
 export const getPassengerCountsByAmbassador = listPassengerCountsByAmbassador;
 
 //vehicle functions
+export const addVehicle = createVehicle;
+export const getQRCode = generateQRCode;
 export const addVehicleHeartbeat = insertHeartbeat;
 export const addVehiclePhoto = insertVehiclePhoto;
 export const addVehicleVideo = insertVehicleVideo;
@@ -77,7 +88,15 @@ export const getVehicleDepartures = listVehicleDepartures;
 //cloud storage functions
 // export const uploadFile = uploadFileX;
 export const uploadFilesToCloudStorage = uploadFileZ;
-// export const downloadFile = downloadFileX;
+export const downloadCloudStorageFile = downloadFileByName;
+export const downloadFileFromWeb = downloadUsingUrl;
+
+//commuter functions
+export const addCommuter = insertCommuter;
+export const addCommuterRequest = insertCommuterRequest;
+export const addCommuterResponse = insertCommuterResponse;
+
+
 //generics
 export const getCountries = findCountries;
 export const hiYebo = onRequest((request, response) => {
@@ -89,7 +108,9 @@ export const hiYebo = onRequest((request, response) => {
 
 /*
 Function URL (addDispatchRecord(us-central1)): https://adddispatchrecord-w5bxtmmbsa-uc.a.run.app
-Function URL (getDispatchRecordsByVehicleId(us-central1)): https://getdispatchrecordsbyvehicleid-w5bxtmmbsa-uc.a.run.app
+Function URL (getDispatchRecordsByVehicle(us-central1)): https://getdispatchrecordsbyvehicle-w5bxtmmbsa-uc.a.run.app
+Function URL (getDispatchRecordsByAssociation(us-central1)): https://getdispatchrecordsbyassociation-w5bxtmmbsa-uc.a.run.app
+Function URL (getDispatchRecordsByMarshal(us-central1)): https://getdispatchrecordsbymarshal-w5bxtmmbsa-uc.a.run.app
 Function URL (registerAssociationUser(us-central1)): https://registerassociationuser-w5bxtmmbsa-uc.a.run.app
 Function URL (registerAssociation(us-central1)): https://registerassociation-w5bxtmmbsa-uc.a.run.app
 Function URL (addSettings(us-central1)): https://addsettings-w5bxtmmbsa-uc.a.run.app
@@ -103,6 +124,27 @@ Function URL (getRouteLandmarks(us-central1)): https://getroutelandmarks-w5bxtmm
 Function URL (getAssociationRoutes(us-central1)): https://getassociationroutes-w5bxtmmbsa-uc.a.run.app
 Function URL (getRoutes(us-central1)): https://getroutes-w5bxtmmbsa-uc.a.run.app
 Function URL (getRoutesByLocation(us-central1)): https://getroutesbylocation-w5bxtmmbsa-uc.a.run.app
+Function URL (addPassengerCount(us-central1)): https://addpassengercount-w5bxtmmbsa-uc.a.run.app
+Function URL (getPassengerCountByVehicle(us-central1)): https://getpassengercountbyvehicle-w5bxtmmbsa-uc.a.run.app
+Function URL (getPassengerCountsByAssociation(us-central1)): https://getpassengercountsbyassociation-w5bxtmmbsa-uc.a.run.app
+Function URL (getPassengerCountsByAmbassador(us-central1)): https://getpassengercountsbyambassador-w5bxtmmbsa-uc.a.run.app
+Function URL (addVehicle(us-central1)): https://addvehicle-w5bxtmmbsa-uc.a.run.app
+Function URL (getQRCode(us-central1)): https://getqrcode-w5bxtmmbsa-uc.a.run.app
+Function URL (addVehicleHeartbeat(us-central1)): https://addvehicleheartbeat-w5bxtmmbsa-uc.a.run.app
+Function URL (addVehiclePhoto(us-central1)): https://addvehiclephoto-w5bxtmmbsa-uc.a.run.app
+Function URL (addVehicleVideo(us-central1)): https://addvehiclevideo-w5bxtmmbsa-uc.a.run.app
+Function URL (addVehicleArrival(us-central1)): https://addvehiclearrival-w5bxtmmbsa-uc.a.run.app
+Function URL (addVehicleDeparture(us-central1)): https://addvehicledeparture-w5bxtmmbsa-uc.a.run.app
+Function URL (getVehiclePhotos(us-central1)): https://getvehiclephotos-w5bxtmmbsa-uc.a.run.app
+Function URL (getVehicleVideos(us-central1)): https://getvehiclevideos-w5bxtmmbsa-uc.a.run.app
+Function URL (getVehicleHeartbeats(us-central1)): https://getvehicleheartbeats-w5bxtmmbsa-uc.a.run.app
+Function URL (getVehicleArrivals(us-central1)): https://getvehiclearrivals-w5bxtmmbsa-uc.a.run.app
+Function URL (getVehicleDepartures(us-central1)): https://getvehicledepartures-w5bxtmmbsa-uc.a.run.app
+Function URL (uploadFilesToCloudStorage(us-central1)): https://uploadfilestocloudstorage-w5bxtmmbsa-uc.a.run.app
+Function URL (downloadCloudStorageFile(us-central1)): https://downloadcloudstoragefile-w5bxtmmbsa-uc.a.run.app
+Function URL (downloadFileFromWeb(us-central1)): https://downloadfilefromweb-w5bxtmmbsa-uc.a.run.app
 Function URL (getCountries(us-central1)): https://getcountries-w5bxtmmbsa-uc.a.run.app
 Function URL (hiYebo(us-central1)): https://us-central1-kasie2024.cloudfunctions.net/hiYebo
+Function URL (getQRCode(us-central1)): https://getqrcode-w5bxtmmbsa-uc.a.run.app 🅿️ 🅿️ 🅿️ 
+🅿️ 🅿️ 🅿️ https://us-central1-kasie2024.cloudfunctions.net/getQRCode
 */

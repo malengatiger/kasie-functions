@@ -1,7 +1,6 @@
-import { model, Schema } from 'mongoose';
 import { Position } from './position';
 
-const dispatchRecordSchema = new Schema({
+export interface DispatchRecord {
   dispatchRecordId: String,
   slug: String,
   routeLandmarkId: String,
@@ -20,7 +19,5 @@ const dispatchRecordSchema = new Schema({
   associationId: String,
   associationName: String,
   
-});
+};
 
-const DispatchRecord = model("DispatchRecord", dispatchRecordSchema);
-export default DispatchRecord;

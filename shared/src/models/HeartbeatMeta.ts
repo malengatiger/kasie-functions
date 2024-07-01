@@ -1,4 +1,4 @@
-export class HeartbeatMeta {
+export interface HeartbeatMeta {
   vehicleId: string;
 
   associationId: string;

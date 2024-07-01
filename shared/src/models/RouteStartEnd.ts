@@ -1,6 +1,6 @@
 import { Position } from './position';
 
-export class RouteStartEnd {
+export interface RouteStartEnd {
   startCityPosition: Position;
 
   endCityPosition: Position;

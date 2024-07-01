@@ -1,10 +1,6 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Position } from './position';
-@Schema({
-  timestamps: true,
-  collection: 'Country',
-})
-export class Country {
+
+export interface Country {
   _partitionKey: string;
   _id: string;
   
@@ -47,4 +43,3 @@ export class Country {
   position: Position;
 }
 
-export const CountrySchema = SchemaFactory.createForClass(Country);
