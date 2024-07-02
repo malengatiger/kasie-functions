@@ -1,11 +1,11 @@
 import { Db, InsertOneResult } from "mongodb";
 import { client } from "../database/config";
-import {
-  makeCommuterQRCode,
-} from "../utilities/upload_to_bucket";
+import { makeCommuterQRCode } from "../utilities/upload_to_bucket";
 import { Commuter } from "../models/Commuter";
 import { handleError } from "./error.api";
 import { CommuterResponse } from "../models/CommuterResponse";
+import { sendCommuterRequestMessageApi } from "./fcm.messaging.api";
+import { CommuterRequest } from "../models/CommuterRequest";
 
 const mm = "🍎🍎🍎 vehicle.api";
 const dbName = "kasie_transie";
@@ -86,12 +86,15 @@ export async function createCommuter(commuter: Commuter): Promise<Commuter> {
   }
   return resp;
 }
-export async function createCommuterRequest(rec: any): Promise<any> {
+export async function createCommuterRequest(
+  request: CommuterRequest
+): Promise<InsertOneResult> {
   let result: InsertOneResult;
   try {
     await client.connect();
     const db: Db = client.db(dbName);
-    result = await db.collection(commuterRequestCollection).insertOne(rec);
+    result = await db.collection(commuterRequestCollection).insertOne(request);
+    sendCommuterRequestMessageApi(request);
     console.log(
       `${mm} 🍎🍎🍎 createHeartbeat done: 🥬 ${JSON.stringify(result)} 🥬 🥬 `
     );
@@ -104,7 +107,9 @@ export async function createCommuterRequest(rec: any): Promise<any> {
     await client.close();
   }
 }
-export async function createCommuterResponse(rec: CommuterResponse): Promise<any> {
+export async function createCommuterResponse(
+  rec: CommuterResponse
+): Promise<InsertOneResult> {
   let result: InsertOneResult;
   try {
     await client.connect();

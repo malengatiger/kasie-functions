@@ -6,6 +6,7 @@ import { UserRecord } from "firebase-admin/auth";
 import { Association } from "../models/Association";
 import { RegistrationBag } from "../models/RegistrationBag";
 import { handleError } from "./error.api";
+import { AssociationToken } from "../models/AssociationToken";
 const mm = "association.api";
 const dbName = "kasie_transie";
 export async function getCountries(): Promise<any[]> {
@@ -198,4 +199,46 @@ export async function getAssociationUsers(
     await client.close();
   }
   return result;
+}
+
+export async function getAssociationToken(
+  associationId: string
+): Promise<AssociationToken | undefined> {
+  let result: AssociationToken[] = [];
+  try {
+    await client.connect();
+    const db: Db = client.db(dbName);
+    const list = await db
+      .collection("AssociationTokens")
+      .find({ associationId: associationId })
+      .toArray();
+    list.forEach((item) => {
+      result.push({
+        _partitionKey: "",
+        _id: item._id,
+        associationId: item.associationId,
+        token: item.token,
+        created: item.created,
+        associationName: item.associationName,
+        userId: item.userId,
+      });
+    });
+    result.sort((a, b) => {
+      return b.created < a.created ? 1 : -1;
+    });
+    console.log(
+      `${mm} 🍎🍎🍎 getAssociationToken found: 🥬 ${result.length} users 🥬 🥬 `
+    );
+    if (result.length > 0) {
+      return result[0];
+    }
+    return undefined;
+  } catch (e) {
+    console.error(e);
+    handleError(`getAssociationToken: ${e}`, {});
+    throw new Error(`getAssociationToken: ${e}`);
+  } finally {
+    await client.close();
+  }
+  return undefined;
 }

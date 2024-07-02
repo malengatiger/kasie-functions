@@ -149,4 +149,48 @@ Function URL (getCountries(us-central1)): https://getcountries-w5bxtmmbsa-uc.a.r
 Function URL (hiYebo(us-central1)): https://us-central1-kasie2024.cloudfunctions.net/hiYebo
 Function URL (getQRCode(us-central1)): https://getqrcode-w5bxtmmbsa-uc.a.run.app 🅿️ 🅿️ 🅿️ 
 🅿️ 🅿️ 🅿️ https://us-central1-kasie2024.cloudfunctions.net/getQRCode
+
+
+functions[us-central1-addDispatchRecord]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/addDispatchRecord).
+✔  functions[us-central1-getDispatchRecordsByVehicle]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/getDispatchRecordsByVehicle).
+✔  functions[us-central1-getDispatchRecordsByAssociation]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/getDispatchRecordsByAssociation).
+✔  functions[us-central1-getDispatchRecordsByMarshal]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/getDispatchRecordsByMarshal).
+✔  functions[us-central1-registerAssociationUser]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/registerAssociationUser).
+✔  functions[us-central1-registerAssociation]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/registerAssociation).
+✔  functions[us-central1-addSettings]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/addSettings).
+✔  functions[us-central1-getAssociations]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/getAssociations).
+✔  functions[us-central1-getAssociationCars]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/getAssociationCars).
+✔  functions[us-central1-addRoute]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/addRoute).
+✔  functions[us-central1-addRoutePoints]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/addRoutePoints).
+✔  functions[us-central1-addRouteLandmarks]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/addRouteLandmarks).
+✔  functions[us-central1-getRoutePoints]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/getRoutePoints).
+✔  functions[us-central1-getRouteLandmarks]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/getRouteLandmarks).
+✔  functions[us-central1-getAssociationRoutes]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/getAssociationRoutes).
+✔  functions[us-central1-getRoutes]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/getRoutes).
+✔  functions[us-central1-getRoutesByLocation]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/getRoutesByLocation).
+✔  functions[us-central1-addPassengerCount]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/addPassengerCount).
+✔  functions[us-central1-getPassengerCountByVehicle]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/getPassengerCountByVehicle).
+✔  functions[us-central1-getPassengerCountsByAssociation]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/getPassengerCountsByAssociation).
+✔  functions[us-central1-getPassengerCountsByAmbassador]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/getPassengerCountsByAmbassador).
+✔  functions[us-central1-addVehicle]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/addVehicle).
+✔  functions[us-central1-getQRCode]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/getQRCode).
+✔  functions[us-central1-addVehicleHeartbeat]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/addVehicleHeartbeat).
+✔  functions[us-central1-addVehiclePhoto]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/addVehiclePhoto).
+✔  functions[us-central1-addVehicleVideo]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/addVehicleVideo).
+✔  functions[us-central1-addVehicleArrival]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/addVehicleArrival).
+✔  functions[us-central1-addVehicleDeparture]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/addVehicleDeparture).
+✔  functions[us-central1-updateVehicleQRCode]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/updateVehicleQRCode).
+✔  functions[us-central1-getVehiclePhotos]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/getVehiclePhotos).
+✔  functions[us-central1-getVehicleVideos]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/getVehicleVideos).
+✔  functions[us-central1-getVehicleHeartbeats]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/getVehicleHeartbeats).
+✔  functions[us-central1-getVehicleArrivals]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/getVehicleArrivals).
+✔  functions[us-central1-getVehicleDepartures]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/getVehicleDepartures).
+✔  functions[us-central1-uploadFilesToCloudStorage]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/uploadFilesToCloudStorage).
+✔  functions[us-central1-downloadCloudStorageFile]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/downloadCloudStorageFile).
+✔  functions[us-central1-downloadFileFromWeb]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/downloadFileFromWeb).
+✔  functions[us-central1-addCommuter]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/addCommuter).
+✔  functions[us-central1-addCommuterRequest]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/addCommuterRequest).
+✔  functions[us-central1-addCommuterResponse]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/addCommuterResponse).
+✔  functions[us-central1-getCountries]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/getCountries).
+✔  functions[us-central1-hiYebo]: http function initialized (http://127.0.0.1:5001/kasie2024/us-central1/hiYebo).
 */

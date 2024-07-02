@@ -1,8 +1,9 @@
+import { ObjectId } from "mongodb";
 
 export interface AssociationToken {
   _partitionKey: string;
 
-  _id: string;
+  _id: ObjectId;
  
   userId: string;
  

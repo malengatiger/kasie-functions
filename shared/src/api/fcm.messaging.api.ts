@@ -1,12 +1,16 @@
 import * as admin from "firebase-admin";
 import { VehicleArrival } from "../models/VehicleArrival";
-import { TopicMessage } from "firebase-admin/lib/messaging/messaging-api";
+import {
+  TokenMessage,
+  TopicMessage,
+} from "firebase-admin/lib/messaging/messaging-api";
 import { VehicleDeparture } from "../models/VehicleDeparture";
 import { VehicleHeartbeat } from "../models/VehicleHeartbeat";
 import { CommuterRequest } from "../models/CommuterRequest";
 import { handleError } from "./error.api";
 import { AmbassadorPassengerCount } from "../models/AmbassadorPassengerCount";
 import { DispatchRecord } from "../models/dispatch_record";
+import { getAssociationToken } from "./association.api";
 
 export async function sendVehicleArrivalMessageApi(arrival: VehicleArrival) {
   try {
@@ -35,6 +39,7 @@ export async function sendVehicleArrivalMessageApi(arrival: VehicleArrival) {
     };
     const messageId = await admin.messaging().send(topicMsg);
     const messageId2 = await admin.messaging().send(topicMsg2);
+    sendToAssociation(arrival.associationId, data, notif);
 
     console.log(
       `🍎🍎🍎 sendVehicleArrivalMessage sent FCM message: ${messageId} and ${messageId2}`
@@ -49,7 +54,9 @@ export async function sendVehicleArrivalMessageApi(arrival: VehicleArrival) {
     );
   }
 }
-export async function sendVehicleDepartureMessageApi(departure: VehicleDeparture) {
+export async function sendVehicleDepartureMessageApi(
+  departure: VehicleDeparture
+) {
   try {
     const notif = {
       title: `Vehicle departure ${departure.vehicleReg}`,
@@ -76,6 +83,8 @@ export async function sendVehicleDepartureMessageApi(departure: VehicleDeparture
     };
     const messageId = await admin.messaging().send(topicMsg1);
     const messageId2 = await admin.messaging().send(topicMsg2);
+    sendToAssociation(departure.associationId, data, notif);
+
     console.log(
       `🍎🍎🍎 sendVehicleDepartureMessage sent FCM message: ${messageId} and ${messageId2}`
     );
@@ -89,7 +98,9 @@ export async function sendVehicleDepartureMessageApi(departure: VehicleDeparture
     );
   }
 }
-export async function sendVehicleHeartbeatMessageApi(heartbeat: VehicleHeartbeat) {
+export async function sendVehicleHeartbeatMessageApi(
+  heartbeat: VehicleHeartbeat
+) {
   try {
     const notif = {
       title: `Vehicle heartbeat ${heartbeat.vehicleReg}`,
@@ -116,6 +127,7 @@ export async function sendVehicleHeartbeatMessageApi(heartbeat: VehicleHeartbeat
     };
     const messageId = await admin.messaging().send(topicMsg);
     const messageId2 = await admin.messaging().send(topicOwnerMsg);
+   sendToAssociation(heartbeat.associationId, data, notif);
 
     console.log(
       `🍎🍎🍎 sendVehicleHeartbeatMessage sent FCM message: ${messageId} and ${messageId2}`
@@ -131,7 +143,9 @@ export async function sendVehicleHeartbeatMessageApi(heartbeat: VehicleHeartbeat
   }
 }
 
-export async function sendCommuterRequestMessageApi(commuterRequest: CommuterRequest) {
+export async function sendCommuterRequestMessageApi(
+  commuterRequest: CommuterRequest
+) {
   const data = {
     ...Object.fromEntries(
       Object.entries(commuterRequest).map(([key, value]) => [
@@ -158,6 +172,7 @@ export async function sendCommuterRequestMessageApi(commuterRequest: CommuterReq
     };
     const messageId = await admin.messaging().send(topicMsg);
     const messageId2 = await admin.messaging().send(topicMsg2);
+    sendToAssociation(commuterRequest.associationId, data, notif);
 
     console.log(
       `🍎🍎🍎 sendCommuterRequestMessage sent FCM message: ${messageId} and ${messageId2}`
@@ -209,6 +224,7 @@ export async function sendPassengerCountMessageApi(
     const messageId = await admin.messaging().send(topicMsg);
     const messageId2 = await admin.messaging().send(topicMsg2);
     const messageId3 = await admin.messaging().send(topicMsg3);
+    sendToAssociation(passengerCount.associationId, data, notif);
 
     console.log(
       `🍎🍎🍎 sendPassengerCountMessage sent FCM message: ${messageId}, ${messageId2} and ${messageId3}`
@@ -259,11 +275,28 @@ export async function sendDispatchMessageApi(dispatchRecord: DispatchRecord) {
     const messageId2 = await admin.messaging().send(topicMsg2);
     const messageId3 = await admin.messaging().send(topicMsg3);
 
+    sendToAssociation(dispatchRecord.associationId, data, notif);
+
     console.log(
       `🍎🍎🍎 sendDispatchMessage sent FCM message: ${messageId}, ${messageId2} and ${messageId3}`
     );
   } catch (error) {
     console.error("🍎🍎🍎 sendDispatchMessage Error sending message:", error);
     handleError(`🍎🍎🍎 sendDispatchMessage Error sending message: ${error}`);
+  }
+}
+
+async function sendToAssociation(associationId: string, data: any, notif: any) {
+  const assocToken = await getAssociationToken(associationId);
+  if (assocToken) {
+    const msg: TokenMessage = {
+      data: data,
+      notification: notif,
+      token: assocToken?.token,
+    };
+    const messageId4 = await admin.messaging().send(msg);
+    console.log(
+      `🍎🍎🍎 sendToAssociation sent DIRECT FCM message: ${messageId4},`
+    );
   }
 }
